@@ -11,6 +11,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {
   state = "available"
 }
+
 # RHEL 8.5
 data "aws_ami" "rhel_8_5" {
   most_recent = true
@@ -22,15 +23,8 @@ data "aws_ami" "rhel_8_5" {
   filter {
     name   = "architecture"
     values = ["x86_64"]
-  }
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+  } 
+  
 }
 
 
@@ -44,7 +38,7 @@ resource "aws_vpc" "tutorial_vpc" {
 
   // We are tagging the VPC with the name "tutorial_vpc"
   tags = {
-    Name = "tpibrahim_vpc"
+    Name = "segma_vpc"
   }
 }
 
@@ -57,7 +51,7 @@ resource "aws_internet_gateway" "tutorial_igw" {
 
   // We are tagging the IGW with the name tutorial_igw
   tags = {
-    Name = "tbrahimtp_igw"
+    Name = "segma_igw"
   }
 }
 
@@ -85,7 +79,7 @@ resource "aws_subnet" "tutorial_public_subnet" {
   // We are tagging the subnet with a name of "tutorial_public_subnet_" and
   // suffixed with the count
   tags = {
-    Name = "tpibrahim_subnet_${count.index}"
+    Name = "segma_subnet_${count.index}"
   }
 }
 
@@ -114,7 +108,7 @@ resource "aws_subnet" "tutorial_private_subnet" {
   // We are tagging the subnet with a name of "tutorial_private_subnet_" and
   // suffixed with the count
   tags = {
-    Name = "tpibrahim_subnet_${count.index}"
+    Name = "segma_subnet_${count.index}"
   }
 }
 
@@ -181,7 +175,7 @@ resource "aws_route_table_association" "private" {
 // Create a security for the EC2 instances called "tutorial_web_sg"
 resource "aws_security_group" "tutorial_web_sg" {
   // Basic details like the name and description of the SG
-  name        = "tutorial_web_sg"
+  name        = "segma_web_sg"
   description = "Security group for tutorial web servers"
   // We want the SG to be in the "tutorial_vpc" VPC
   vpc_id      = aws_vpc.tutorial_vpc.id
@@ -221,14 +215,14 @@ resource "aws_security_group" "tutorial_web_sg" {
 
   // Here we are tagging the SG with the name "tutorial_web_sg"
   tags = {
-    Name = "tpibrahim_web_sg"
+    Name = "segma_web_sg"
   }
 }
 
 // Create a security group for the RDS instances called "tutorial_db_sg"
 resource "aws_security_group" "tutorial_db_sg" {
   // Basic details like the name and description of the SG
-  name        = "tutorial_db_sg"
+  name        = "segma_db_sg"
   description = "Security group for tutorial databases"
   // We want the SG to be in the "tutorial_vpc" VPC
   vpc_id      = aws_vpc.tutorial_vpc.id
@@ -252,14 +246,14 @@ resource "aws_security_group" "tutorial_db_sg" {
 
   // Here we are tagging the SG with the name "tutorial_db_sg"
   tags = {
-    Name = "tpibrahim_db_sg"
+    Name = "segma_db_sg"
   }
 }
 
 // Create a db subnet group named "tutorial_db_subnet_group"
 resource "aws_db_subnet_group" "tutorial_db_subnet_group" {
   // The name and description of the db subnet group
-  name        = "tpibrahim_db_subnet_group"
+  name        = "segma_db_subnet_group"
   description = "DB subnet group for tutorial"
   
   // Since the db subnet group requires 2 or more subnets, we are going to
@@ -273,7 +267,7 @@ resource "aws_db_instance" "tutorial_database" {
   // The amount of storage in gigabytes that we want for the database. This is 
   // being set by the settings.database.allocated_storage variable, which is 
   // set to 10
-  identifier             = "rds-postgres"
+  identifier             = "rds-segma"
 
   allocated_storage      = var.settings.database.allocated_storage
   
@@ -321,11 +315,12 @@ resource "tls_private_key" "pk" {
 }
 
 resource "aws_key_pair" "tutorial_kp" {
-  key_name   = "tpibrahim"       # Create a "Key" to AWS!!
+  key_name   = "segma_app"       # Create a "Key" to AWS!!
   public_key = tls_private_key.pk.public_key_openssh
 
   provisioner "local-exec" { # Create a "Key" to your computer!!
-    command = " echo '${tls_private_key.pk.private_key_pem}' > /home/adm1/terraform/tp_aws/tpibrahim.pem"
+    command = " echo '${tls_private_key.pk.private_key_pem}' > /home/adm1/terraform/tp_aws/segma_app.pem"
+    
   }
 }
 
@@ -363,7 +358,7 @@ resource "aws_instance" "tutorial_web" {
   // We are tagging the EC2 instance with the name "tutorial_db_" followed by
   // the count index
   tags = {
-    Name = "tpibrahim_${count.index}"
+    Name = "ec2-segma"
   }
 }
 
@@ -388,6 +383,6 @@ resource "aws_eip" "tutorial_web_eip" {
 	// Here we are tagging the Elastic IP with the name
 	// "tutorial_web_eip_" followed by the count index
   tags = {
-    Name = "tpibrahim_web_eip_${count.index}"
+    Name = "segma_app_web_eip_${count.index}"
   }
 }
