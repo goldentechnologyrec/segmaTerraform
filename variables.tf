@@ -35,9 +35,9 @@ variable "settings" {
     "database" = {
       allocated_storage   = 10            // storage in gigabytes
       engine              = "postgres"       // engine type
-      engine_version      = "14"      // engine version
+      engine_version      = "13"      // engine version
       instance_class      = "db.t3.micro" // rds instance type
-      db_name             = "tpibrahim"    // database name
+      db_name             = "segma"    // database name
       skip_final_snapshot = true
     },
     "web_app" = {
@@ -82,18 +82,19 @@ variable "private_subnet_cidr_blocks" {
 // web security group
 
 
-// This variable contains the database master user
-// We will be storing this in a secrets file
-variable "db_username" {
-  description = "Database master user"
-  type        = string
-  sensitive   = true
-}
 
 // This variable contains the database master password
 // We will be storing this in a secrets file
 variable "db_password" {
   description = "Database master user password"
+  type        = string
+  sensitive   = true
+}
+
+// This variable contains the database master user
+// We will be storing this in a secrets file
+variable "db_username" {
+  description = "Database master user"
   type        = string
   sensitive   = true
 }
