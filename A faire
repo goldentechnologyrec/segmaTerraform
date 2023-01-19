@@ -2,3 +2,4 @@ Modifier l'alimentation de la liste déroulante de tri
 Automatiser la création des tables dans PostgreSQL
 Developper une chaine CI/CD comportant tous les composants de segma
 Automatiser l'installation des paquets via Ansible
+Vérifier l'existance des objets AWS avant création dans terraform
